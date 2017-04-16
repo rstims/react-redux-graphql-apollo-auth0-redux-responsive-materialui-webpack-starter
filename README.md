@@ -1,4 +1,4 @@
-Full ES2015 React + React-Router + Redux + GraphQL + Apollo + Bootstrap with Hot Reload and redux-devtools STARTER
+Full ES2015 React + React-Router + Redux + GraphQL + Apollo with Hot Reload and redux-devtools STARTER
 ***ADDS AUTH0 AND REDUX-RESPONSIVE AND START OF PROFILE PAGE AND MATERIAL UI***
 ==========
 
