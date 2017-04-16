@@ -5,9 +5,11 @@ import {
   applyMiddleware
 }                               from 'redux';
 import { persistState }         from 'redux-devtools';
-import { routerReducer }        from 'react-router-redux';
+import { browserHistory } from 'react-router';
+import { routerMiddleware, routerReducer }        from 'react-router-redux';
 import createLogger             from 'redux-logger';
 import thunkMiddleware          from 'redux-thunk';
+import { responsiveStateReducer, responsiveStoreEnhancer } from 'redux-responsive'
 import * as reducers            from '../modules/reducers';
 import DevTools                 from '../devTools/DevTools.jsx';
 import { apolloClient }         from '../../services/apollo';
@@ -19,10 +21,12 @@ const loggerMiddleware = createLogger({
 
 // createStore : enhancer
 const enhancer = compose(
+  responsiveStoreEnhancer,
   applyMiddleware(
     thunkMiddleware,
     apolloClient.middleware(), // apollo middleware
-    loggerMiddleware
+    loggerMiddleware,
+    routerMiddleware(browserHistory)
   ), // logger after thunk to avoid undefined actions
   persistState(getDebugSessionKey()),
   DevTools.instrument()
@@ -37,7 +41,8 @@ function getDebugSessionKey() {
 const reducer = combineReducers({
   ...reducers,
   apollo: apolloClient.reducer(), // apollo reducer
-  routing: routerReducer
+  routing: routerReducer,
+  browser: responsiveStateReducer
 });
 
 // export default = "redux store"

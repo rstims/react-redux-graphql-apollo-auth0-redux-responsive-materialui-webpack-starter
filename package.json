@@ -40,12 +40,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MacKentoch/react-redux-graphql-apollo-bootstrap-webpack-starter.git"
+    "url": "git+https://github.com/rstims/dvb.git"
   },
   "bugs": {
-    "url": "https://github.com/MacKentoch/react-redux-graphql-apollo-bootstrap-webpack-starter/issues"
+    "url": "https://github.com/rstims/dvb/issues"
   },
-  "author": "Erwan DATIN (MacKentoch)",
+  "author": "Ryan Stimmler (rstims)",
   "license": "MIT",
   "devDependencies": {
     "autoprefixer": "^6.3.6",
@@ -90,6 +90,7 @@
   "dependencies": {
     "animate.css": "^3.5.1",
     "apollo-client": "^0.4.22",
+    "auth0-lock": "^10.14.0",
     "babel-polyfill": "^6.7.4",
     "bootstrap": "^3.3.6",
     "classnames": "^2.2.3",
@@ -97,6 +98,7 @@
     "graphql-tag": "^0.1.15",
     "jquery": "^2.2.1",
     "js-base64": "^2.1.9",
+    "material-ui": "^0.17.1",
     "moment": "^2.14.1",
     "react": "^15.3.0",
     "react-addons-shallow-compare": "^15.3.0",
@@ -111,6 +113,7 @@
     "react-router-redux": "^4.0.1",
     "react-tap-event-plugin": "^2.0.1",
     "redux": "^3.3.1",
+    "redux-responsive": "^4.1.1",
     "redux-thunk": "^2.0.1",
     "whatwg-fetch": "^1.0.0"
   }

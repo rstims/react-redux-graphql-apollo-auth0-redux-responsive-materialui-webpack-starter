@@ -4,7 +4,7 @@ const dateFormat = 'DD/MM/YYYY HH:mm';
 /* -----------------------------------------
   constants
  ------------------------------------------*/
-// non protected views:
+// non profile views:
 const ENTER_HOME_VIEW  = 'ENTER_HOME_VIEW';
 const LEAVE_HOME_VIEW  = 'LEAVE_HOME_VIEW';
 const ENTER_ABOUT_VIEW = 'ENTER_ABOUT_VIEW';
@@ -13,9 +13,10 @@ const ENTER_LOGIN_VIEW = 'ENTER_LOGIN_VIEW';
 const LEAVE_LOGIN_VIEW = 'LEAVE_LOGIN_VIEW';
 const ENTER_REGISTER_VIEW = 'ENTER_REGISTER_VIEW';
 const LEAVE_REGISTER_VIEW = 'LEAVE_REGISTER_VIEW';
-// protected views:
-const ENTER_PROTECTED_VIEW = 'ENTER_PROTECTED_VIEW';
-const LEAVE_PROTECTED_VIEW = 'LEAVE_PROTECTED_VIEW';
+const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
+// profile views:
+const ENTER_PROFILE_VIEW = 'ENTER_PRofile_VIEW';
+const LEAVE_PROFILE_VIEW = 'LEAVE_PRofile_VIEW';
 
 /* -----------------------------------------
   Reducer
@@ -23,7 +24,8 @@ const LEAVE_PROTECTED_VIEW = 'LEAVE_PROTECTED_VIEW';
 const initialState = {
   currentView:  'not set',
   enterTime:    null,
-  leaveTime:    null
+  leaveTime:    null,
+  isDrawerOpen: false,
 };
 
 export default function (state = initialState, action) {
@@ -31,7 +33,7 @@ export default function (state = initialState, action) {
 
   switch (action.type) {
   // /////////////////////
-  // non protected views:
+  // non profile views:
   // /////////////////////
   case ENTER_HOME_VIEW:
   case ENTER_ABOUT_VIEW:
@@ -55,14 +57,21 @@ export default function (state = initialState, action) {
       return {
         ...state,
         currentView:  action.currentView,
-        leaveTime:    currentTime
+        leaveTime:    currentTime,
+        isDrawerOpen: false,
+
       };
     }
     return state;
+  case TOGGLE_DRAWER:
+    return {
+      ...state,
+      isDrawerOpen: !action.isDrawerOpen
+    }
   // /////////////////////
-  // protected views:
+  // profile views:
   // /////////////////////
-  case ENTER_PROTECTED_VIEW:
+  case ENTER_PROFILE_VIEW:
     if (state.currentView !== action.currentView) {
       return {
         ...state,
@@ -71,12 +80,13 @@ export default function (state = initialState, action) {
       };
     }
     return state;
-  case LEAVE_PROTECTED_VIEW:
+  case LEAVE_PROFILE_VIEW:
     if (state.currentView === action.currentView) {
       return {
         ...state,
         currentView:  action.currentView,
-        leaveTime:    currentTime
+        leaveTime:    currentTime,
+        isDrawerOpen: false,
       };
     }
     return state;
@@ -142,15 +152,21 @@ export function leaveRegister() {
   };
 }
 
-export function enterProtected() {
+export function enterProfile() {
   return {
-    type:         ENTER_PROTECTED_VIEW,
-    currentView:  'protected'
+    type:         ENTER_PROFILE_VIEW,
+    currentView:  'profile'
   };
 }
-export function leaveProtected() {
+export function leaveProfile() {
   return {
-    type:         LEAVE_PROTECTED_VIEW,
-    currentView:  'protected'
+    type:         LEAVE_PROFILE_VIEW,
+    currentView:  'profile'
   };
 }
+export const toggleDrawer = isDrawerOpen => (
+  {
+      type:         TOGGLE_DRAWER,
+      isDrawerOpen
+  }
+)

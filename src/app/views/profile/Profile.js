@@ -7,38 +7,28 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { Link }       from 'react-router';
 import { ErrorAlert } from '../../components';
 
-class Login extends Component {
+class Profile extends Component {
 
   state = {
     animated: true,
     viewEntersAnim: true,
 
-    email: '',
-    password: ''
+    email: this.props.email || '',
+    username: this.props.username || '',
   };
 
   componentDidMount() {
-    const { enterLogin } = this.props;
-    enterLogin();
+    const { enterProfile } = this.props;
+    enterProfile();
   }
-
-  // componentWillReceiveProps(newProps) {
-  //   const { user: { username } } = newProps;
-  //
-  //   if (username &&
-  //       username.length > 0 &&
-  //       this.props.user.username !== username) {
-  //     this.setState({email: username});
-  //   }
-  // }
 
   shouldComponentUpdate(nextProps, nextState) {
     return shallowCompare(this, nextProps, nextState);
   }
 
   componentWillUnmount() {
-    const { leaveLogin } = this.props;
-    leaveLogin();
+    const { leaveProfile } = this.props;
+    leaveProfile();
   }
 
   render() {
@@ -46,7 +36,7 @@ class Login extends Component {
       animated,
       viewEntersAnim,
       email,
-      password
+      username
     } = this.state;
     const {
       mutationLoading,
@@ -60,13 +50,19 @@ class Login extends Component {
           'view-enter': viewEntersAnim
         })}>
         <div className="row">
-          <div className="col-md-4 col-md-offset-4">
+          <ErrorAlert
+            showAlert={!!error}
+            errorTitle={'Error'}
+            errorMessage={error ? error.message : ''}
+            onClose={this.closeError}
+          />
+          <div className="col-md-8 col-md-offset-2">
             <form
               className="form-horizontal"
               noValidate>
               <fieldset>
                 <legend>
-                  Login
+                  Edit Profile
                 </legend>
                 <div className="form-group">
                   <label
@@ -76,7 +72,7 @@ class Login extends Component {
                   </label>
                   <div className="col-lg-10">
                     <input
-                      type="text"
+                      type="email"
                       className="form-control"
                       id="inputEmail"
                       placeholder="Email"
@@ -88,45 +84,18 @@ class Login extends Component {
                   </div>
                 </div>
                 <div className="form-group">
-                  <label
-                    htmlFor="inputPassword"
-                    className="col-lg-2 control-label">
-                    Password
-                  </label>
-                  <div className="col-lg-10">
-                    <input
-                      type="password"
-                      className="form-control"
-                      id="inputPassword"
-                      placeholder="Password"
-                      value={password}
-                      onChange={this.handlesOnPasswordChange}
-                    />
-                  </div>
-                </div>
-                <div className="form-group">
                   <div className="col-lg-10 col-lg-offset-2">
-                    <Link
-                      className="btn btn-default"
-                      to={'/'}>
-                      Cancel
-                    </Link>
                     <button
                       className="btn btn-primary login-button"
                       disabled={mutationLoading}
-                      onClick={this.handlesOnLogin}>
-                      Login
+                      onClick={this.handlesOnUpdate}>
+                      Update
                     </button>
                   </div>
                 </div>
               </fieldset>
             </form>
-            <ErrorAlert
-              showAlert={!!error}
-              errorTitle={'Error'}
-              errorMessage={error ? error.message : ''}
-              onClose={this.closeError}
-            />
+            
           </div>
         </div>
 
@@ -140,32 +109,27 @@ class Login extends Component {
     this.setState({ email: event.target.value });
   }
 
-  handlesOnPasswordChange = (event) => {
+  handlesOnUsernameChange = (event) => {
     event.preventDefault();
     // should add some validator before setState in real use cases
-    this.setState({ password: event.target.value });
+    this.setState({ username: event.target.value });
   }
 
-  handlesOnLogin = (event) => {
+  handlesOnUpdate = (event) => {
     event.preventDefault();
-    const { loginUser } = this.props;
-    const { email, password } = this.state;
-    const { router } = this.context;
+    const { updateUser } = this.props;
+    const { email, username } = this.state;
 
     const variables = {
       user: {
-        username: email,
-        password: password
+        email: email,
+        username: username,
       }
     };
 
-    loginUser({variables})
-      .then(
-        () => router.push({ pathname: '/protected' })
-      )
-      .catch(
-        () => console.log('login went wrong...')
-      );
+    updateUser({variables})
+      .then(res => console.log(res))
+      .catch(err => console.log('login went wrong... ', err));
   }
 
   closeError = (event) => {
@@ -175,31 +139,27 @@ class Login extends Component {
   }
 }
 
-Login.propTypes= {
+Profile.propTypes= {
   // views props:
   currentView:  PropTypes.string.isRequired,
-  enterLogin:    PropTypes.func.isRequired,
-  leaveLogin:    PropTypes.func.isRequired,
+  enterProfile:    PropTypes.func.isRequired,
+  leaveProfile:    PropTypes.func.isRequired,
   // apollo props:
   user: PropTypes.shape({
     username: PropTypes.string
   }),
 
   // auth props:
-  userIsAuthenticated: PropTypes.bool.isRequired,
   mutationLoading: PropTypes.bool.isRequired,
   error: PropTypes.object,
 
   // apollo actions
-  loginUser: PropTypes.func.isRequired,
+  updateUser: PropTypes.func.isRequired,
 
   // redux actions
-  onUserLoggedIn: PropTypes.func.isRequired,
+  onUserUpdate: PropTypes.func.isRequired,
   resetError: PropTypes.func.isRequired
 };
 
-Login.contextTypes = {
-  router: PropTypes.object
-};
 
-export default Login;
+export default Profile;

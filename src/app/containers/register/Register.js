@@ -16,6 +16,7 @@ mutation CreateUser ($user: CreateUserInput!) {
    createUser (input: $user) {
        changedUser {
          id,
+         email,
          username,
          createdAt,
          modifiedAt,
@@ -59,7 +60,7 @@ const RegisterWithCreatUserMutation = graphql(
             }
           );
       }
-    })
+    }) 
   }
 )(Register);
 

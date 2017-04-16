@@ -2,8 +2,9 @@
 import { connect }            from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as viewsActions      from '../../redux/modules/views';
-import * as userAuthActions   from '../../redux/modules/userAuth';
-import { Login }              from '../../views';
+import * as userUpdateActions   from '../../redux/modules/userUpdate';
+import { auth }               from '../../services/auth';
+import { Profile }              from '../../views';
 import gql                    from 'graphql-tag';
 import { graphql }            from 'react-apollo';
 
@@ -13,16 +14,21 @@ import { graphql }            from 'react-apollo';
   GraphQL - Apollo client
  ------------------------------------------*/
 
-const logUser = gql`
-  mutation LoginUser($user: LoginUserInput!) {
-    loginUser(input: $user) {
-      token,
+const updateUser = gql`
+  mutation UpdateUser($user: UpdateUserInput!) {
+    updateUser(input: $user) {
       user {
         id,
+        email,
         username,
+        picture,
+        isVerified,
+        fName,
+        lName
         createdAt,
         modifiedAt,
         lastLogin
+        
       }
     }
   }
@@ -31,31 +37,31 @@ const logUser = gql`
 // 1- add queries:
 
 // 2- add mutation "logUser":
-const LoginWithMutation = graphql(
-  logUser,
+const UpdateProfileMutate = graphql(
+  updateUser,
   {
-    name: 'logUserMutation',
-    props: ({ ownProps, logUserMutation }) => ({
-      loginUser(user) {
+    name: 'updateProfileMutation',
+    props: ({ ownProps, updateProfileMutation }) => ({
+      updateUser(user) {
         ownProps.setMutationLoading();
 
-        return logUserMutation(user)
+        return updateProfileMutation(user)
           .then(
             (
               {
                 data: {
-                  loginUser
+                  updateUser
                 }
               }
             ) => {
-              ownProps.onUserLoggedIn(loginUser.token, loginUser.user);
+              ownProps.onUserUpdate(updateUser.token, updateUser.user);
               ownProps.unsetMutationLoading();
               return Promise.resolve();
             }
           )
           .catch(
             (error)=> {
-              ownProps.onUserLogError(error);
+              ownProps.onUserUpdateError(error);
               ownProps.unsetMutationLoading();
               return Promise.reject();
             }
@@ -63,7 +69,7 @@ const LoginWithMutation = graphql(
       }
     })
   }
-)(Login);
+)(Profile);
 
 
 /* -----------------------------------------
@@ -72,10 +78,12 @@ const LoginWithMutation = graphql(
 
 const mapStateToProps = (state) => {
   return {
+    // user props:
+    email: state.userUpdate.email,
+    username: state.userUpdate.username,
     // views props:
     currentView:  state.views.currentView,
     // user Auth props:
-    userIsAuthenticated: state.userAuth.isAuthenticated,
     mutationLoading: state.userAuth.mutationLoading,
     // errors:
     error: state.userAuth.error
@@ -86,15 +94,15 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       // views actions:
-      enterLogin: viewsActions.enterLogin,
-      leaveLogin: viewsActions.leaveLogin,
+      enterProfile: viewsActions.enterProfile,
+      leaveProfile: viewsActions.leaveProfile,
 
       // userAuth actions:
-      onUserLoggedIn: userAuthActions.receivedUserLoggedIn,
-      onUserLogError: userAuthActions.errorUserLoggedIn,
-      setMutationLoading: userAuthActions.setLoadingStateForUserLogin,
-      unsetMutationLoading: userAuthActions.unsetLoadingStateForUserLogin,
-      resetError: userAuthActions.resetLogError
+      onUserUpdate: userUpdateActions.receivedUserUpdate,
+      onUserUpdateError: userUpdateActions.errorUserUpdate,
+      setMutationLoading: userUpdateActions.setLoadingStateForUserUpdate,
+      unsetMutationLoading: userUpdateActions.unsetLoadingStateForUserUpdate,
+      resetError: userUpdateActions.resetUpdateError
     },
     dispatch
   );
@@ -103,4 +111,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(LoginWithMutation);
+)(UpdateProfileMutate);

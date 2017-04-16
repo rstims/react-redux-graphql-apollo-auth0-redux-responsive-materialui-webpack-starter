@@ -16,10 +16,8 @@ import {
   // non protected views
   ConnectedHome,
   ConnectedAbout,
-  ConnectedLogin,
-  ConnectedRegister,
   // protected views
-  ConnectedProtected
+  ConnectedProfile
 }                               from '../containers';
 import {
   PageNotFound
@@ -43,12 +41,10 @@ export const Routes = () => {
             {/* non protected views */}
             <IndexRoute component={ConnectedHome} />
             <Route path="/about" component={ConnectedAbout} />
-            <Route path="/login" component={ConnectedLogin} />
-            <Route path="/register" component={ConnectedRegister} />
             {/* logout: just redirects to home (App will take care of removing the token) */}
             <Route path="/logout" onEnter={logOutUser} />
             {/* protected views */}
-            <Route path="/protected" component={ConnectedProtected}  onEnter={requireAuth} />
+            <Route path="/profile" component={ConnectedProfile}  onEnter={requireAuth} />
             {/* page not found */}
             <Route path="*" component={PageNotFound} />
           </Route>
@@ -66,7 +62,7 @@ function requireAuth(nextState, replace) {
 
   if (!isAuthenticated) {
     replace({
-      pathname: '/login',
+      pathname: '/',
       state: { nextPathname: nextState.location.pathname }
     });
   }

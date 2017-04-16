@@ -28,10 +28,13 @@ const RESET_LOG_ERRORS = 'RESET_LOG_ERRORS';
  ------------------------------------------*/
 const emptyUser = {
   id:  null,
+  email: '',
   username: '',
   lastLogin: '',
   createdAt: '',
-  modifiedAt: ''
+  modifiedAt: '',
+  lName: '',
+  fName: '',
 };
 
 const initialState = {
@@ -51,11 +54,8 @@ export default function (state = initialState, action) {
       ...state,
       lastActionTime: action.time,
       isAuthenticated: action.isAuthenticated,
-      id: action.user.id,
-      username: action.user.username,
-      lastLogin: action.user.lastLogin,
-      createdAt: action.user.createdAt,
-      modifiedAt: action.user.modifiedAt,
+      ...action.user,
+      username: action.user.email,
       lastRefreshTime: action.time,
       error: null
     };
@@ -69,11 +69,7 @@ export default function (state = initialState, action) {
       // errors:
       error: {...action.error},
       // user infos:
-      id: initialState.id,
-      username: initialState.username,
-      lastLogin: initialState.lastLogin,
-      createdAt: initialState.createdAt,
-      modifiedAt: initialState.modifiedAt
+      ...emptyUser
     };
 
   case SET_LOADING_LOGGED_IN:
@@ -92,11 +88,8 @@ export default function (state = initialState, action) {
       lastActionTime: action.time,
       isAuthenticated: action.isAuthenticated,
       // user infos from storage if authenticated:
-      id: action.user.id,
-      username: action.user.username,
-      lastLogin: action.user.lastLogin,
-      createdAt: action.user.createdAt,
-      modifiedAt: action.user.modifiedAt
+      ...action.user,
+      username: action.user.email,
     };
 
   case SET_USER_LOGOUT:
@@ -105,6 +98,7 @@ export default function (state = initialState, action) {
       lastActionTime: action.time,
       isAuthenticated: action.isAuthenticated,
       id: action.user.id,
+      email: action.user.email,
       username: action.user.username,
       lastLogin: action.user.lastLogin,
       createdAt: action.user.createdAt,
@@ -229,8 +223,9 @@ export function unsetLoadingStateForUserRegister(time = moment().format(dateForm
 // //////////////////
 // user logout:
 // //////////////////
-export function setUserLogout(time = moment().format(dateFormat)) {
+export function setUserLogout(push, time = moment().format(dateFormat)) {
   auth.clearAllAppStorage();
+  push('/logout');
   return {
     type: SET_USER_LOGOUT,
     time,

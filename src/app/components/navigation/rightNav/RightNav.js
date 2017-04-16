@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import RightNavButton       from './rightNavButton/RightNavButton';
 
-const RightNav = ({ rightLinks, onRightNavButtonClick, userIsAuthenticated }) => {
+const RightNav = ({ rightLinks, onRightNavButtonClick, userIsAuthenticated, lockLogin }) => {
   return (
     <ul className="nav navbar-nav navbar-right">
       {
@@ -39,6 +39,12 @@ const RightNav = ({ rightLinks, onRightNavButtonClick, userIsAuthenticated }) =>
             }
           )
       }
+      <li key={rightLinks.length}>
+        <a
+          style={{cursor: 'pointer'}}
+          onClick={() => lockLogin()}
+        >Login</a>
+      </li>
     </ul>
   );
 };

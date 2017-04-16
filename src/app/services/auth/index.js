@@ -1,3 +1,5 @@
+import AuthService from './AuthService';
+import { appConfig } from '../../config';
 const TOKEN_KEY = 'token';
 const USER_INFO = 'userInfo';
 
@@ -29,9 +31,11 @@ export const auth = {
   },
 
   setToken(value = '', toStorage = APP_PERSIST_STORES_TYPES[0], tokenKey = TOKEN_KEY) {
+
     if (!value || value.length <= 0) {
       return;
     }
+    
     // localStorage:
     if (toStorage === APP_PERSIST_STORES_TYPES[0]) {
       if (localStorage) {
@@ -60,6 +64,7 @@ export const auth = {
   isAuthenticated(fromStorage = APP_PERSIST_STORES_TYPES[0], tokenKey = TOKEN_KEY) {
     // localStorage:
     if (fromStorage === APP_PERSIST_STORES_TYPES[0]) {
+      
       if ((localStorage && localStorage.getItem(tokenKey))) {
         return true;
       } else {
@@ -146,5 +151,6 @@ export const auth = {
     if (sessionStorage) {
       sessionStorage.clear();
     }
-  }
+  },
+  service: new AuthService(appConfig.auth0.clientId, appConfig.auth0.domain)
 };

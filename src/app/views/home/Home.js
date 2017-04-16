@@ -2,10 +2,29 @@ import React, {
   Component,
   PropTypes
 }                     from 'react';
-import {Jumbotron}    from '../../components';
-import cx             from 'classnames';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Link }       from 'react-router';
+import RaisedButton from 'material-ui/RaisedButton';
+import {StyleSheet} from 'redux-responsive/react'
+
+const stylesheet = {
+    loginButton:{
+      buttonStyle:{
+        height: 'auto',
+      },
+      overlayStyle:{
+        minWidth: '200px',
+        padding: '30px 50px',
+        height: 'auto',
+      },
+      rippleStyle:{
+        height: 'auto',
+      },
+      style: {
+        marginBottom: '20px',
+      }
+    }
+}
 
 class Home extends Component {
 
@@ -30,37 +49,28 @@ class Home extends Component {
 
   render() {
     const { animated, viewEntersAnim } = this.state;
-    return(
-      <div
-        key="homeView"
-        className={cx({
-          'animatedViews': animated,
-          'view-enter': viewEntersAnim
-        })}>
-        <Jumbotron>
-          <h1>
-            Full ES2015 ReactJS + Redux + graphQL + Apollo + Bootstrap
-          </h1>
-          <h2>
-            with Hot Reload!!!
-          </h2>
-          <h2>
-            with React Router (SPA)
-          </h2>
-          <h1>
-            Starter
-          </h1>
+    const { user } = this.props;
 
-          <p>
-            <Link
-              className="btn btn-success btn-lg"
-              to={'/about'}>
-              <i className="fa fa-info"></i>
-              &nbsp;
-              go to about
-            </Link>
-          </p>
-        </Jumbotron>
+    return(
+      <div key="homeView" style={{display: 'flex', alignItems: 'center', height: '70vh', justifyContent: 'center'}}>
+        {!user.isAuthenticated && <div style={{display: 'flex-item'}}>
+            <RaisedButton 
+              onClick={() => this.props.lockLogin()}
+              label="Login" 
+              primary={true} 
+              style={this.props.styles.loginButton.style}
+              buttonStyle={this.props.styles.loginButton.buttonStyle}
+              overlayStyle={this.props.styles.loginButton.overlayStyle}
+              rippleStyle={this.props.styles.loginButton.rippleStyle} />
+            <div></div>
+            <RaisedButton 
+              onClick={() => {this.props.lockLogin('signUp');}}
+              label="Register" 
+              primary={true} 
+              buttonStyle={this.props.styles.loginButton.buttonStyle}
+              overlayStyle={this.props.styles.loginButton.overlayStyle}
+              rippleStyle={this.props.styles.loginButton.rippleStyle} />
+        </div>}
       </div>
     );
   }
@@ -74,4 +84,4 @@ Home.propTypes= {
   leaveHome:    PropTypes.func.isRequired
 };
 
-export default Home;
+export default StyleSheet(stylesheet)(Home);

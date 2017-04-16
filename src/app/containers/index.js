@@ -2,10 +2,8 @@
 import App                  from './app/App';
 import ConnectedHome        from './home/Home';
 import ConnectedAbout       from './about/About';
-import ConnectedLogin       from './login/Login';
-import ConnectedRegister    from './register/Register';
 // protected view containers:
-import ConnectedProtected   from './protected/Protected';
+import ConnectedProfile   from './profile/Profile';
 
 
 export {
@@ -13,8 +11,6 @@ export {
   App,
   ConnectedHome,
   ConnectedAbout,
-  ConnectedLogin,
-  ConnectedRegister,
   // protected view containers:
-  ConnectedProtected
+  ConnectedProfile
 };
